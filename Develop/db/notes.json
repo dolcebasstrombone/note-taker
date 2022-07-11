@@ -1,24 +1,9 @@
 {
   "notes": [
     {
-      "title": "Test",
-      "text": "Test text",
+      "title": "first",
+      "text": "first",
       "id": "0"
-    },
-    {
-      "title": "A Second Test",
-      "text": "More test text",
-      "id": "1"
-    },
-    {
-      "title": "Add Third",
-      "text": "third text",
-      "id": "2"
-    },
-    {
-      "title": "Add a fourth",
-      "text": "testing 1234",
-      "id": "3"
     }
   ]
 }

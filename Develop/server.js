@@ -45,6 +45,25 @@ function validateNote(note) {
   return true;
 }
 
+// currently deletes properly from json, but html doesn't update. might be fixed with heroku
+// also there's another problem but i forgor
+// OH when a note is deleted, and then another added, there's a possibility of multiple of one id. should be fine when using sql.
+function deleteNote(id, notesArray) {
+  //find the note by id
+  note = notesArray.filter((note) => note.id === id);
+  //filter out the deleted note
+  notesArray = notesArray.filter((note) => note.id !== id);
+  //update the ole json
+  fs.writeFileSync(
+    path.join(__dirname, "./db/notes.json"),
+    //null means don't edit out existing data. 2 means white space between values
+    //its just format and readability
+    JSON.stringify({ notes: notesArray }, null, 2)
+  );
+  // tell the html to update here? ---
+  return note;
+}
+
 //============================================================================================================================
 // API routes
 
@@ -72,9 +91,13 @@ app.post("/api/notes", (req, res) => {
 });
 
 app.delete("/api/notes/:id", (req, res) => {
-  const deletedNote = req.body
+  //get the id from the req params
+  const { id } = req.params;
+  //delete the note
+  const deletedNote = deleteNote(id, notes);
+
   res.json(deletedNote);
-})
+});
 
 //============================================================================================================================
 // HTML routes
