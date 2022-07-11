@@ -1,10 +1,15 @@
 const { notes } = require("./db/notes.json");
+const fs = require("fs");
+const path = require("path");
 const express = require("express");
 
 const PORT = process.env.PORT || 3001;
 const app = express();
+//parse incoming data into key value pairs (extended: true means look for nested data)
 app.use(express.urlencoded({ extended: true }));
+//while parsing use json
 app.use(express.json());
+//use the files in the public folder (/ happens automatically)
 app.use(express.static("public"));
 
 app.listen(PORT, () => {
@@ -12,30 +17,74 @@ app.listen(PORT, () => {
 });
 
 //============================================================================================================================
-//routes for html go here
 
-// * `GET /notes` should return the `notes.html` file.
-app.get("/notes", (req, res) => {
-  res.json("/notes will return notes.html.");
-});
+function createNewNote(body, notesArray) {
+  //define the inputted data
+  const note = body;
+  //only pushes to in mem
+  notesArray.push(note);
+  //below pushes to the json for next time
+  //writeFileSync is syncronous v of writeFile.
+  //larger data set, async would be better.
+  fs.writeFileSync(
+    path.join(__dirname, "./db/notes.json"),
+    //null means don't edit out existing data. 2 means white space between values
+    //its just format and readability
+    JSON.stringify({ notes: notesArray }, null, 2)
+  );
+  return note;
+}
 
-// * `GET *` should return the `index.html` file.
-// app.get("*", (req, res) => {
-//   res.json("Wildcard will return index.html.");
-// });
+function validateNote(note) {
+  if (!note.title || typeof note.title !== "string") {
+    return false;
+  }
+  if (!note.text || typeof note.text !== "string") {
+    return false;
+  }
+  return true;
+}
 
 //============================================================================================================================
-//route for API go here
+// API routes
 
-// GET /api/notes should read the db.json file and return all saved notes as JSON.
+// returns notes db in json format
 app.get("/api/notes", (req, res) => {
   let results = notes;
   console.log(req.query);
   res.json(results);
 });
 
+// handles new saved notes
+app.post("/api/notes", (req, res) => {
+  // gives each note an id based on array length
+  req.body.id = notes.length.toString();
+  // validate the note using function above routes
+  if (!validateNote(req.body)) {
+    res.status(400).send("The note is not formatted properly.");
+  }
+  // if its fine, create and add
+  else {
+    // add note to json file and animals array (see function above routes)
+    const newNote = createNewNote(req.body, notes);
+    res.json(newNote);
+  }
+});
+
+app.delete("/api/notes/:id", (req, res) => {
+  const deletedNote = req.body
+  res.json(deletedNote);
+})
+
 //============================================================================================================================
-// POST /api/notes should receive a new note to save on the request body, add it to the
-// db.json file, and then return the new note to the client. You'll need to find a way
-// to give each note a unique id when it's saved (look into npm packages that could do
-// this for you).
+// HTML routes
+
+//returns notes.html
+app.get("/notes", (req, res) => {
+  res.sendFile(path.join(__dirname, "public/notes.html"));
+});
+
+//wildcard (any non-path) returns index.html. This route goes last in the JS.
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "public/index.html"));
+});
