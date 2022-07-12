@@ -91,12 +91,13 @@ app.post("/api/notes", (req, res) => {
 });
 
 app.delete("/api/notes/:id", (req, res) => {
-  //get the id from the req params
-  const { id } = req.params;
-  //delete the note
-  const deletedNote = deleteNote(id, notes);
+  res.json(req.params);
+  // //get the id from the req params
+  // const { id } = req.params;
+  // //delete the note
+  // const deletedNote = deleteNote(id, notes);
 
-  res.json(deletedNote);
+  // res.json(deletedNote);
 });
 
 //============================================================================================================================
