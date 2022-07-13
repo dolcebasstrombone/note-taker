@@ -1,19 +1,14 @@
 {
   "notes": [
     {
-      "title": "First",
-      "text": "text",
+      "title": "Your First Note",
+      "text": "Sample text",
       "id": "0"
     },
     {
-      "title": "Second",
-      "text": "tex tex ",
+      "title": "Try Making a Note!",
+      "text": "Click the add button and then save when you're done.",
       "id": "1"
-    },
-    {
-      "title": "Third",
-      "text": "agjfzgjsfzgzfg",
-      "id": "2"
     }
   ]
 }

@@ -46,8 +46,7 @@ function validateNote(note) {
 }
 
 // currently deletes properly from json, but html doesn't update. might be fixed with heroku
-// also there's another problem but i forgor
-// OH when a note is deleted, and then another added, there's a possibility of multiple of one id. should be fine when using sql.
+// OH when a note is deleted, and then another added, there's a possibility of multiple of one id. should be fine when using sql w/ primary key
 function deleteNote(id, notesArray) {
   //find the note by id
   note = notesArray.filter((note) => note.id === id);
